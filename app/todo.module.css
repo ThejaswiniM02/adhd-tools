@@ -11,10 +11,15 @@
 
 .form { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; display: flex; flex-direction: column; gap: 10px; margin-bottom: 1rem; }
 .mainInput { width: 100%; font-size: 15px; }
+.descInput { width: 100%; font-size: 13px; resize: none; font-family: inherit; background: var(--bg); color: var(--text); border: 0.5px solid var(--border2); border-radius: var(--radius); padding: 8px 12px; }
+.descInput:focus { outline: none; border-color: var(--text3); }
 .formRow { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
 .field { display: flex; flex-direction: column; gap: 4px; }
 .field label { font-size: 12px; color: var(--text2); }
 .addBtn { align-self: flex-end; padding: 8px 16px; }
+.aiBtn { padding: 8px 10px; font-size: 12px; color: var(--purple); border-color: var(--purple); }
+.aiBtn:disabled { opacity: 0.4; cursor: not-allowed; }
+.aiHint { font-size: 11px; color: var(--text3); margin-top: 2px; }
 
 .filters { display: flex; gap: 6px; margin-bottom: 1.25rem; flex-wrap: wrap; }
 .filterBtn { padding: 4px 14px; border-radius: 20px; font-size: 13px; color: var(--text2); border: 0.5px solid var(--border); background: var(--bg); cursor: pointer; }
@@ -40,7 +45,9 @@
 .taskDone { text-decoration: line-through; color: var(--text3); }
 .creativeTag { font-size: 11px; padding: 1px 7px; border-radius: 20px; background: #EEEDFE; color: #3C3489; margin-left: 6px; }
 
-.delBtn { border: none; background: none; color: var(--text3); font-size: 15px; padding: 2px 4px; cursor: pointer; border-radius: 4px; flex-shrink: 0; }
+.editBtn { border: none; background: none; color: var(--text3); font-size: 15px; padding: 2px 4px; cursor: pointer; border-radius: 4px; text-decoration: none; }
+.editBtn:hover { color: var(--purple); background: var(--bg2); }
+.delBtn { border: none; background: none; color: var(--text3); font-size: 15px; padding: 2px 4px; cursor: pointer; border-radius: 4px; }
 .delBtn:hover { color: var(--text); background: var(--bg2); }
 
 .empty { text-align: center; padding: 2rem; color: var(--text3); font-size: 14px; border: 0.5px dashed var(--border2); border-radius: var(--radius-lg); }

@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import styles from './todo.module.css'
 
-const STORE = 'adhd_todos_v3'
+const STORE = 'adhd_todos_v4'
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6) }
 
 function calcPriority(deadline, hours, type) {
@@ -26,10 +26,12 @@ function hoursUntil(dl) {
 export default function TodoPage() {
   const [todos, setTodos] = useState([])
   const [input, setInput] = useState('')
+  const [desc, setDesc] = useState('')
   const [deadline, setDeadline] = useState('')
-  const [hours, setHours] = useState('1')
+  const [hours, setHours] = useState('')
   const [type, setType] = useState('regular')
-  const [filter, setFilter] = useState('all')
+  const [estimating, setEstimating] = useState(false)
+  const [aiReason, setAiReason] = useState('')
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -45,27 +47,38 @@ export default function TodoPage() {
     try { localStorage.setItem(STORE, JSON.stringify(next)) } catch (e) {}
   }
 
+  async function estimate() {
+    if (!input.trim()) return
+    setEstimating(true)
+    setAiReason('')
+    try {
+      const res = await fetch('/api/estimate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ taskName: input, description: desc })
+      })
+      const data = await res.json()
+      setHours(String(data.hours))
+      setAiReason(data.reason)
+    } catch (e) {
+      setAiReason('estimate failed, enter hours manually')
+    }
+    setEstimating(false)
+  }
+
   function add() {
     if (!input.trim() || !deadline || !hours) return
     const { score, level } = calcPriority(deadline, hours, type)
-    save([{ id: uid(), text: input.trim(), deadline, hours: parseFloat(hours), type, score, level, done: false, ts: Date.now() }, ...todos])
-    setInput('')
+    save([{ id: uid(), text: input.trim(), desc, deadline, hours: parseFloat(hours), type, score, level, done: false, ts: Date.now() }, ...todos])
+    setInput(''); setDesc(''); setHours(''); setAiReason('')
   }
 
   function toggle(id) { save(todos.map(t => t.id === id ? { ...t, done: !t.done } : t)) }
   function del(id) { save(todos.filter(t => t.id !== id)) }
 
-  // re-score on render so deadlines stay live
   const scored = todos.map(t => ({ ...t, ...calcPriority(t.deadline, t.hours, t.type) }))
-  const filtered = scored.filter(t => {
-    if (filter === 'active') return !t.done
-    if (filter === 'done') return t.done
-    if (filter === 'high') return t.level === 'high'
-    return true
-  }).sort((a, b) => b.score - a.score)
-
-  const active = filtered.filter(t => !t.done)
-  const done = filtered.filter(t => t.done)
+  const active = scored.filter(t => !t.done).sort((a, b) => b.score - a.score)
+  const done = scored.filter(t => t.done)
   const total = todos.length
   const doneCount = todos.filter(t => t.done).length
   const pct = total ? Math.round((doneCount / total) * 100) : 0
@@ -84,17 +97,11 @@ export default function TodoPage() {
         <div className={styles.stat}><span className={styles.statNum}>{doneCount}</span><span className={styles.statLbl}>done</span></div>
         <div className={styles.stat}><span className={styles.statNum}>{total - doneCount}</span><span className={styles.statLbl}>left</span></div>
       </div>
-
       <div className={styles.progBar}><div className={styles.progFill} style={{ width: pct + '%' }} /></div>
 
       <div className={styles.form}>
-        <input
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && add()}
-          placeholder="what's on your mind?"
-          className={styles.mainInput}
-        />
+        <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && add()} placeholder="what's on your mind?" className={styles.mainInput} />
+        <textarea value={desc} onChange={e => setDesc(e.target.value)} placeholder="describe it (optional — helps AI estimate time)" className={styles.descInput} rows={2} />
         <div className={styles.formRow}>
           <div className={styles.field}>
             <label>deadline</label>
@@ -102,7 +109,13 @@ export default function TodoPage() {
           </div>
           <div className={styles.field}>
             <label>hours needed</label>
-            <input type="number" value={hours} onChange={e => setHours(e.target.value)} min="0.5" step="0.5" style={{ width: 80 }} />
+            <div style={{ display: 'flex', gap: 6 }}>
+              <input type="number" value={hours} onChange={e => setHours(e.target.value)} min="0.5" step="0.5" placeholder="?" style={{ width: 70 }} />
+              <button onClick={estimate} disabled={estimating || !input.trim()} className={styles.aiBtn}>
+                {estimating ? '...' : '✦ AI'}
+              </button>
+            </div>
+            {aiReason && <span className={styles.aiHint}>{aiReason}</span>}
           </div>
           <div className={styles.field}>
             <label>type</label>
@@ -115,49 +128,43 @@ export default function TodoPage() {
         </div>
       </div>
 
-      <div className={styles.filters}>
-        {['all', 'active', 'done', 'high'].map(f => (
-          <button key={f} className={filter === f ? styles.filterActive : styles.filterBtn} onClick={() => setFilter(f)}>
-            {f === 'high' ? '🔴 urgent' : f}
-          </button>
-        ))}
-      </div>
-
-      {!filtered.length && (
-        <div className={styles.empty}>{!todos.length ? 'nothing yet — dump your thoughts above ☝️' : 'no tasks match this filter'}</div>
-      )}
-
-      {active.length > 0 && (
+      {!todos.length ? (
+        <div className={styles.empty}>nothing yet — dump your thoughts above ☝️</div>
+      ) : (
         <>
-          <p className={styles.sectionHd}>to do · sorted by priority</p>
-          {active.map(t => (
-            <div key={t.id} className={styles.item}>
-              <button className={styles.cb} onClick={() => toggle(t.id)} aria-label="mark done" />
-              <span className={`${styles.priDot} ${priDot[t.level]}`} />
-              <div className={styles.taskBody}>
-                <span className={styles.taskText}>{t.text}{t.type === 'creative' && <span className={styles.creativeTag}>creative</span>}</span>
-                <span className={styles.taskMeta}>{priLabel[t.level]} {t.score}% priority · {hoursUntil(t.deadline)} · {t.hours}h</span>
-              </div>
-              <button className={styles.delBtn} onClick={() => del(t.id)}>✕</button>
-            </div>
-          ))}
-        </>
-      )}
-
-      {done.length > 0 && (
-        <>
-          <p className={styles.sectionHd}>completed ✓</p>
-          {done.map(t => (
-            <div key={t.id} className={`${styles.item} ${styles.itemDone}`}>
-              <button className={`${styles.cb} ${styles.cbChecked}`} onClick={() => toggle(t.id)}>✓</button>
-              <span className={`${styles.priDot} ${priDot[t.level]}`} />
-              <div className={styles.taskBody}>
-                <span className={`${styles.taskText} ${styles.taskDone}`}>{t.text}</span>
-                <span className={styles.taskMeta}>{hoursUntil(t.deadline)}</span>
-              </div>
-              <button className={styles.delBtn} onClick={() => del(t.id)}>✕</button>
-            </div>
-          ))}
+          {active.length > 0 && (
+            <>
+              <p className={styles.sectionHd}>to do · sorted by priority</p>
+              {active.map(t => (
+                <div key={t.id} className={styles.item}>
+                  <button className={styles.cb} onClick={() => toggle(t.id)} aria-label="mark done" />
+                  <span className={`${styles.priDot} ${priDot[t.level]}`} />
+                  <div className={styles.taskBody}>
+                    <span className={styles.taskText}>{t.text}{t.type === 'creative' && <span className={styles.creativeTag}>creative</span>}</span>
+                    <span className={styles.taskMeta}>{priLabel[t.level]} {t.score}% · {hoursUntil(t.deadline)} · {t.hours}h</span>
+                  </div>
+                  <a href={`/tasks?edit=${t.id}`} className={styles.editBtn}>✎</a>
+                  <button className={styles.delBtn} onClick={() => del(t.id)}>✕</button>
+                </div>
+              ))}
+            </>
+          )}
+          {done.length > 0 && (
+            <>
+              <p className={styles.sectionHd}>completed ✓</p>
+              {done.map(t => (
+                <div key={t.id} className={`${styles.item} ${styles.itemDone}`}>
+                  <button className={`${styles.cb} ${styles.cbChecked}`} onClick={() => toggle(t.id)}>✓</button>
+                  <span className={`${styles.priDot} ${priDot[t.level]}`} />
+                  <div className={styles.taskBody}>
+                    <span className={`${styles.taskText} ${styles.taskDone}`}>{t.text}</span>
+                    <span className={styles.taskMeta}>{hoursUntil(t.deadline)}</span>
+                  </div>
+                  <button className={styles.delBtn} onClick={() => del(t.id)}>✕</button>
+                </div>
+              ))}
+            </>
+          )}
         </>
       )}
     </div>
