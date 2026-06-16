@@ -110,7 +110,7 @@ export default function TodoPage() {
           <div className={styles.field}>
             <label>hours needed</label>
             <div style={{ display: 'flex', gap: 6 }}>
-              <input type="number" value={hours} onChange={e => setHours(e.target.value)} min="0.5" step="0.5" placeholder="?" style={{ width: 70 }} />
+              <input type="number" value={hours} onChange={e => setHours(e.target.value)} min="0.1" step="0.1" style={{ width: 70 }} />
               <button onClick={estimate} disabled={estimating || !input.trim()} className={styles.aiBtn}>
                 {estimating ? '...' : '✦ AI'}
               </button>
