@@ -113,7 +113,7 @@ function TasksInner() {
         <div className={styles.taskBody}>
           <span className={`${styles.taskText} ${t.done ? styles.taskDone : ''}`}>{t.text}{t.type === 'creative' && <span className={styles.creativeTag}>creative</span>}</span>
           <span className={styles.taskMeta}>{t.score}% priority · {hoursUntil(t.deadline)} · {t.hours}h</span>
-          {t.desc && <span className={styles.taskDesc}>{t.desc}</span>}
+          
         </div>
         <button className={styles.editBtn} onClick={() => startEdit(t)}>✎</button>
         <button className={styles.delBtn} onClick={() => del(t.id)}>✕</button>

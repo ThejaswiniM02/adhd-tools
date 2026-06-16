@@ -17,7 +17,7 @@
 .taskBody { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .taskText { font-size: 15px; }
 .taskMeta { font-size: 11px; color: var(--text3); }
-.taskDesc { font-size: 12px; color: var(--text2); font-style: italic; }
+
 .taskDone { text-decoration: line-through; color: var(--text3); }
 .creativeTag { font-size: 11px; padding: 1px 7px; border-radius: 20px; background: #EEEDFE; color: #3C3489; margin-left: 6px; }
 
