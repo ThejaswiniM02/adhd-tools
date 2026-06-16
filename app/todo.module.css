@@ -9,10 +9,15 @@
 .progBar { height: 4px; background: var(--bg3); border-radius: 2px; margin-bottom: 1.5rem; overflow: hidden; }
 .progFill { height: 100%; background: var(--teal); border-radius: 2px; transition: width 0.3s; }
 
-.addRow { display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; }
+.form { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; display: flex; flex-direction: column; gap: 10px; margin-bottom: 1rem; }
+.mainInput { width: 100%; font-size: 15px; }
+.formRow { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+.field { display: flex; flex-direction: column; gap: 4px; }
+.field label { font-size: 12px; color: var(--text2); }
+.addBtn { align-self: flex-end; padding: 8px 16px; }
 
 .filters { display: flex; gap: 6px; margin-bottom: 1.25rem; flex-wrap: wrap; }
-.filterBtn { padding: 4px 14px; border-radius: 20px; font-size: 13px; color: var(--text2); border: 0.5px solid var(--border); background: var(--bg); }
+.filterBtn { padding: 4px 14px; border-radius: 20px; font-size: 13px; color: var(--text2); border: 0.5px solid var(--border); background: var(--bg); cursor: pointer; }
 .filterActive { padding: 4px 14px; border-radius: 20px; font-size: 13px; color: var(--text); border: 0.5px solid var(--border2); background: var(--bg2); font-weight: 500; cursor: pointer; }
 
 .sectionHd { font-size: 11px; font-weight: 500; color: var(--text3); letter-spacing: .06em; text-transform: uppercase; margin: 1.25rem 0 6px; }
@@ -29,10 +34,13 @@
 .priMed { background: var(--amber); }
 .priLow { background: var(--teal); }
 
-.taskText { flex: 1; font-size: 15px; cursor: pointer; }
+.taskBody { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.taskText { font-size: 15px; }
+.taskMeta { font-size: 11px; color: var(--text3); }
 .taskDone { text-decoration: line-through; color: var(--text3); }
+.creativeTag { font-size: 11px; padding: 1px 7px; border-radius: 20px; background: #EEEDFE; color: #3C3489; margin-left: 6px; }
 
-.delBtn { border: none; background: none; color: var(--text3); font-size: 15px; padding: 2px 4px; cursor: pointer; border-radius: 4px; }
+.delBtn { border: none; background: none; color: var(--text3); font-size: 15px; padding: 2px 4px; cursor: pointer; border-radius: 4px; flex-shrink: 0; }
 .delBtn:hover { color: var(--text); background: var(--bg2); }
 
-.empty { text-align: center; padding: 2rem; color: var(--text3); font-size: 14px; border: 0.5px dashed var(--border2); border-radius: var(--radius-lg); margin-top: 1rem; }
+.empty { text-align: center; padding: 2rem; color: var(--text3); font-size: 14px; border: 0.5px dashed var(--border2); border-radius: var(--radius-lg); }
