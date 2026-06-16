@@ -1,0 +1,34 @@
+.title { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
+.sub { font-size: 13px; color: var(--text2); margin-bottom: 1.5rem; }
+
+.form { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; display: flex; flex-direction: column; gap: 12px; margin-bottom: 1.5rem; }
+.row { display: flex; gap: 12px; flex-wrap: wrap; }
+.field { display: flex; flex-direction: column; gap: 4px; }
+.field label { font-size: 12px; color: var(--text2); }
+
+.sectionHd { font-size: 11px; font-weight: 500; color: var(--text3); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 8px; }
+
+.card { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); margin-bottom: 8px; }
+.card:hover { border-color: var(--border2); }
+
+.rankBadge { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; flex-shrink: 0; }
+.rank1 { background: #FCEBEB; color: #A32D2D; }
+.rank2 { background: #FAEEDA; color: #854F0B; }
+.rank3 { background: #EAF3DE; color: #3B6D11; }
+.rankN { background: var(--bg2); color: var(--text2); }
+
+.info { flex: 1; min-width: 0; }
+.taskName { font-size: 15px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.meta { font-size: 12px; color: var(--text2); margin-top: 2px; }
+.creativeTag { font-size: 11px; padding: 2px 7px; border-radius: 20px; background: #EEEDFE; color: #3C3489; margin-left: 6px; font-weight: 400; }
+
+.scoreBlock { text-align: right; flex-shrink: 0; }
+.scoreNum { font-size: 18px; font-weight: 500; }
+.scoreLbl { font-size: 11px; color: var(--text2); }
+.barWrap { height: 4px; background: var(--bg3); border-radius: 2px; margin-top: 6px; width: 80px; }
+.barFill { height: 100%; border-radius: 2px; transition: width 0.3s; }
+
+.delBtn { border: none; background: none; color: var(--text3); font-size: 15px; padding: 2px 4px; cursor: pointer; border-radius: 4px; }
+.delBtn:hover { color: var(--text); background: var(--bg2); }
+
+.empty { text-align: center; padding: 2rem; color: var(--text3); font-size: 14px; border: 0.5px dashed var(--border2); border-radius: var(--radius-lg); }
