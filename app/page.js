@@ -11,7 +11,7 @@ function calcPriority(deadline, hours, type) {
   const effort = Math.min(30, parseFloat(hours) * 3)
   const creative = type === 'creative' ? 15 : 0
   const score = Math.min(100, Math.round(urgency * 0.6 + effort * 0.3 + creative))
-  const level = score >= 65 ? 'high' : score >= 35 ? 'med' : 'low'
+  const level = score >= 40 ? 'high' : score >= 15 ? 'med' : 'low'
   return { score, level }
 }
 
