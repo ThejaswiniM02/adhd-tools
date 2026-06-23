@@ -12,7 +12,8 @@ export default function RootLayout({ children }) {
       <body>
         <nav>
           <a href="/">brain dump</a>
-          <a href="/tasks">my tasks</a>
+          <a href="/tasks">active tasks</a>
+          <a href="/completed">completed</a>
         </nav>
         <main>{children}</main>
       </body>

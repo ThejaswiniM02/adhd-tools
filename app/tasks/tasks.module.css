@@ -1,42 +1,37 @@
-.title { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
-.sub { font-size: 13px; color: var(--text2); margin-bottom: 1.5rem; }
-.sectionHd { font-size: 11px; font-weight: 500; color: var(--text3); letter-spacing: .06em; text-transform: uppercase; margin: 1.25rem 0 6px; }
+.title { font-size: 26px; font-weight: 600; margin-bottom: 6px; }
+.sub { font-size: 14px; color: var(--text2); margin-bottom: 1.5rem; }
+.loading { color: var(--text2); padding: 2rem; text-align: center; }
 
-.item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); margin-bottom: 6px; transition: border-color 0.15s; }
+.item { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: var(--card); border: 0.5px solid var(--border); border-radius: var(--radius); margin-bottom: 8px; transition: border-color 0.15s; }
 .item:hover { border-color: var(--border2); }
-.itemDone { opacity: 0.5; }
 
-.cb { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--border2); background: none; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; cursor: pointer; color: var(--text); }
-.cbChecked { background: var(--teal); border-color: var(--teal); color: #fff; }
+.cb { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border2); background: none; padding: 0; flex-shrink: 0; cursor: pointer; transition: all 0.15s; }
+.cb:hover { border-color: var(--teal); background: rgba(100,223,223,0.1); }
 
 .priDot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 .priHigh { background: var(--red); }
 .priMed { background: var(--amber); }
 .priLow { background: var(--teal); }
 
-.taskBody { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.taskText { font-size: 15px; }
-.taskMeta { font-size: 11px; color: var(--text3); }
+.taskBody { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.taskText { font-size: 15px; font-weight: 500; }
+.taskMeta { font-size: 12px; color: var(--text3); }
+.creativeTag { font-size: 11px; padding: 1px 8px; border-radius: 20px; background: rgba(167,139,250,0.15); color: var(--purple); margin-left: 8px; font-weight: 400; }
 
-.taskDone { text-decoration: line-through; color: var(--text3); }
-.creativeTag { font-size: 11px; padding: 1px 7px; border-radius: 20px; background: #EEEDFE; color: #3C3489; margin-left: 6px; }
+.editBtn { border: none; background: none; color: var(--text3); font-size: 16px; padding: 3px 6px; cursor: pointer; border-radius: 6px; }
+.editBtn:hover { color: var(--purple); background: rgba(167,139,250,0.1); }
+.delBtn { border: none; background: none; color: var(--text3); font-size: 15px; padding: 3px 6px; cursor: pointer; border-radius: 6px; }
+.delBtn:hover { color: var(--red); background: rgba(255,107,107,0.1); }
 
-.editBtn { border: none; background: none; color: var(--text3); font-size: 15px; padding: 2px 4px; cursor: pointer; border-radius: 4px; }
-.editBtn:hover { color: var(--purple); background: var(--bg2); }
-.delBtn { border: none; background: none; color: var(--text3); font-size: 15px; padding: 2px 4px; cursor: pointer; border-radius: 4px; }
-.delBtn:hover { color: var(--text); background: var(--bg2); }
-
-.editCard { background: var(--bg); border: 0.5px solid var(--purple); border-radius: var(--radius-lg); padding: 1rem; margin-bottom: 8px; display: flex; flex-direction: column; gap: 8px; }
-.editInput { font-size: 15px; width: 100%; }
-.editDesc { font-size: 13px; width: 100%; resize: none; font-family: inherit; background: var(--bg); color: var(--text); border: 0.5px solid var(--border2); border-radius: var(--radius); padding: 8px 12px; }
-.editDesc:focus { outline: none; }
+.editCard { background: var(--card); border: 0.5px solid var(--purple); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px; }
+.editInput { font-size: 15px; width: 100%; font-weight: 500; }
+.editDesc { width: 100%; font-size: 13px; resize: none; }
 .editRow { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
 .field { display: flex; flex-direction: column; gap: 4px; }
 .field label { font-size: 12px; color: var(--text2); }
 .editActions { display: flex; gap: 8px; }
-.saveBtn { background: var(--purple); color: #fff; border-color: var(--purple); padding: 6px 16px; }
-.saveBtn:hover { opacity: 0.9; background: var(--purple); }
-.cancelBtn { padding: 6px 16px; }
+.saveBtn { background: var(--purple2); color: #fff; border-color: var(--purple2); }
+.saveBtn:hover { background: var(--purple); border-color: var(--purple); }
 
-.empty { text-align: center; padding: 2rem; color: var(--text3); font-size: 14px; border: 0.5px dashed var(--border2); border-radius: var(--radius-lg); }
-.empty a { color: var(--purple); }
+.empty { text-align: center; padding: 3rem; color: var(--text3); font-size: 14px; }
+.empty a { color: var(--purple); text-decoration: none; }

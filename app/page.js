@@ -1,8 +1,10 @@
 'use client'
 import { useState, useEffect } from 'react'
-import styles from './todo.module.css'
+import { supabase } from '../lib/supabase'
+import styles from './page.module.css'
 
-const STORE = 'adhd_todos_v4'
+const OLD_STORE = 'adhd_todos_v4'
+
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6) }
 
 function calcPriority(deadline, hours, type) {
@@ -15,16 +17,7 @@ function calcPriority(deadline, hours, type) {
   return { score, level }
 }
 
-function hoursUntil(dl) {
-  const h = (new Date(dl).getTime() - Date.now()) / 3600000
-  if (h < 0) return '⚠️ overdue'
-  if (h < 1) return Math.round(h * 60) + 'm left'
-  if (h < 24) return h.toFixed(1) + 'h left'
-  return Math.round(h / 24) + 'd left'
-}
-
-export default function TodoPage() {
-  const [todos, setTodos] = useState([])
+export default function HomePage() {
   const [input, setInput] = useState('')
   const [desc, setDesc] = useState('')
   const [deadline, setDeadline] = useState('')
@@ -32,20 +25,18 @@ export default function TodoPage() {
   const [type, setType] = useState('regular')
   const [estimating, setEstimating] = useState(false)
   const [aiReason, setAiReason] = useState('')
-  const [mounted, setMounted] = useState(false)
+  const [adding, setAdding] = useState(false)
+  const [migrating, setMigrating] = useState(false)
+  const [migrateMsg, setMigrateMsg] = useState('')
+  const [hasMigrated, setHasMigrated] = useState(false)
 
   useEffect(() => {
-    try { const r = localStorage.getItem(STORE); if (r) setTodos(JSON.parse(r)) } catch (e) {}
     const now = new Date()
     now.setMinutes(now.getMinutes() - now.getTimezoneOffset())
     setDeadline(now.toISOString().slice(0, 16))
-    setMounted(true)
+    const done = localStorage.getItem('migrated_to_supabase')
+    setHasMigrated(!!done)
   }, [])
-
-  function save(next) {
-    setTodos(next)
-    try { localStorage.setItem(STORE, JSON.stringify(next)) } catch (e) {}
-  }
 
   async function estimate() {
     if (!input.trim()) return
@@ -60,48 +51,82 @@ export default function TodoPage() {
       const data = await res.json()
       setHours(String(data.hours))
       setAiReason(data.reason)
-    } catch (e) {
-      setAiReason('estimate failed, enter hours manually')
+    } catch {
+      setAiReason('estimate failed — enter hours manually')
     }
     setEstimating(false)
   }
 
-  function add() {
+  async function add() {
     if (!input.trim() || !deadline || !hours) return
+    setAdding(true)
     const { score, level } = calcPriority(deadline, hours, type)
-    save([{ id: uid(), text: input.trim(), desc, deadline, hours: parseFloat(hours), type, score, level, done: false, ts: Date.now() }, ...todos])
+    await supabase.from('tasks').insert({
+      id: uid(),
+      text: input.trim(),
+      description: desc,
+      deadline: new Date(deadline).toISOString(),
+      hours: parseFloat(hours),
+      type,
+      score,
+      level,
+      done: false
+    })
     setInput(''); setDesc(''); setHours(''); setAiReason('')
+    setAdding(false)
   }
 
-  function toggle(id) { save(todos.map(t => t.id === id ? { ...t, done: !t.done } : t)) }
-  function del(id) { save(todos.filter(t => t.id !== id)) }
-
-  const scored = todos.map(t => ({ ...t, ...calcPriority(t.deadline, t.hours, t.type) }))
-  const active = scored.filter(t => !t.done).sort((a, b) => b.score - a.score)
-  const done = scored.filter(t => t.done)
-  const total = todos.length
-  const doneCount = todos.filter(t => t.done).length
-  const pct = total ? Math.round((doneCount / total) * 100) : 0
-  const priDot = { high: styles.priHigh, med: styles.priMed, low: styles.priLow }
-  const priLabel = { high: '🔴', med: '🟡', low: '🟢' }
-
-  if (!mounted) return null
+  async function migrate() {
+    setMigrating(true)
+    try {
+      const raw = localStorage.getItem(OLD_STORE)
+      if (!raw) { setMigrateMsg('no local tasks found'); setMigrating(false); return }
+      const tasks = JSON.parse(raw)
+      if (!tasks.length) { setMigrateMsg('no local tasks found'); setMigrating(false); return }
+      const rows = tasks.map(t => ({
+        id: t.id || uid(),
+        text: t.text,
+        description: t.desc || '',
+        deadline: new Date(t.deadline).toISOString(),
+        hours: parseFloat(t.hours) || 1,
+        type: t.type || 'regular',
+        score: t.score || 0,
+        level: t.level || 'low',
+        done: t.done || false
+      }))
+      const { error } = await supabase.from('tasks').upsert(rows)
+      if (error) { setMigrateMsg('migration failed: ' + error.message) }
+      else {
+        localStorage.setItem('migrated_to_supabase', '1')
+        setHasMigrated(true)
+        setMigrateMsg(`✓ migrated ${rows.length} tasks!`)
+      }
+    } catch (e) {
+      setMigrateMsg('migration failed')
+    }
+    setMigrating(false)
+  }
 
   return (
     <div>
       <h1 className={styles.title}>brain dump 🧠</h1>
-      <p className={styles.sub}>get it out of your head</p>
-
-      <div className={styles.stats}>
-        <div className={styles.stat}><span className={styles.statNum}>{total}</span><span className={styles.statLbl}>total</span></div>
-        <div className={styles.stat}><span className={styles.statNum}>{doneCount}</span><span className={styles.statLbl}>done</span></div>
-        <div className={styles.stat}><span className={styles.statNum}>{total - doneCount}</span><span className={styles.statLbl}>left</span></div>
-      </div>
-      <div className={styles.progBar}><div className={styles.progFill} style={{ width: pct + '%' }} /></div>
+      <p className={styles.sub}>get it out of your head, figure it out later</p>
 
       <div className={styles.form}>
-        <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && add()} placeholder="what's on your mind?" className={styles.mainInput} />
-        <textarea value={desc} onChange={e => setDesc(e.target.value)} placeholder="describe it (optional — helps AI estimate time)" className={styles.descInput} rows={2} />
+        <input
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && add()}
+          placeholder="what's on your mind?"
+          className={styles.mainInput}
+        />
+        <textarea
+          value={desc}
+          onChange={e => setDesc(e.target.value)}
+          placeholder="describe it — helps AI estimate time (optional)"
+          className={styles.descInput}
+          rows={2}
+        />
         <div className={styles.formRow}>
           <div className={styles.field}>
             <label>deadline</label>
@@ -110,7 +135,7 @@ export default function TodoPage() {
           <div className={styles.field}>
             <label>hours needed</label>
             <div style={{ display: 'flex', gap: 6 }}>
-              <input type="number" value={hours} onChange={e => setHours(e.target.value)} min="0.1" step="0.1" style={{ width: 70 }} />
+              <input type="number" value={hours} onChange={e => setHours(e.target.value)} min="0.1" step="0.1" placeholder="?" style={{ width: 70 }} />
               <button onClick={estimate} disabled={estimating || !input.trim()} className={styles.aiBtn}>
                 {estimating ? '...' : '✦ AI'}
               </button>
@@ -124,48 +149,20 @@ export default function TodoPage() {
               <option value="creative">✦ creative</option>
             </select>
           </div>
-          <button onClick={add} className={styles.addBtn}>+ add</button>
+          <button onClick={add} disabled={adding} className={styles.addBtn}>
+            {adding ? '...' : '+ add'}
+          </button>
         </div>
       </div>
 
-      {!todos.length ? (
-        <div className={styles.empty}>nothing yet — dump your thoughts above ☝️</div>
-      ) : (
-        <>
-          {active.length > 0 && (
-            <>
-              <p className={styles.sectionHd}>to do · sorted by priority</p>
-              {active.map(t => (
-                <div key={t.id} className={styles.item}>
-                  <button className={styles.cb} onClick={() => toggle(t.id)} aria-label="mark done" />
-                  <span className={`${styles.priDot} ${priDot[t.level]}`} />
-                  <div className={styles.taskBody}>
-                    <span className={styles.taskText}>{t.text}{t.type === 'creative' && <span className={styles.creativeTag}>creative</span>}</span>
-                    <span className={styles.taskMeta}>{priLabel[t.level]} {t.score}% · {hoursUntil(t.deadline)} · {t.hours}h</span>
-                  </div>
-                  <a href={`/tasks?edit=${t.id}`} className={styles.editBtn}>✎</a>
-                  <button className={styles.delBtn} onClick={() => del(t.id)}>✕</button>
-                </div>
-              ))}
-            </>
-          )}
-          {done.length > 0 && (
-            <>
-              <p className={styles.sectionHd}>completed ✓</p>
-              {done.map(t => (
-                <div key={t.id} className={`${styles.item} ${styles.itemDone}`}>
-                  <button className={`${styles.cb} ${styles.cbChecked}`} onClick={() => toggle(t.id)}>✓</button>
-                  <span className={`${styles.priDot} ${priDot[t.level]}`} />
-                  <div className={styles.taskBody}>
-                    <span className={`${styles.taskText} ${styles.taskDone}`}>{t.text}</span>
-                    <span className={styles.taskMeta}>{hoursUntil(t.deadline)}</span>
-                  </div>
-                  <button className={styles.delBtn} onClick={() => del(t.id)}>✕</button>
-                </div>
-              ))}
-            </>
-          )}
-        </>
+      {!hasMigrated && (
+        <div className={styles.migrateBox}>
+          <p>got existing tasks in your browser? migrate them to Supabase so they're saved forever.</p>
+          <button onClick={migrate} disabled={migrating} className={styles.migrateBtn}>
+            {migrating ? 'migrating...' : '⬆ migrate local tasks'}
+          </button>
+          {migrateMsg && <span className={styles.migrateMsg}>{migrateMsg}</span>}
+        </div>
       )}
     </div>
   )

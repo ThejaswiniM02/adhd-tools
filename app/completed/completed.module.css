@@ -1,0 +1,18 @@
+.title { font-size: 26px; font-weight: 600; margin-bottom: 6px; }
+.sub { font-size: 14px; color: var(--text2); margin-bottom: 1.5rem; }
+.loading { color: var(--text2); padding: 2rem; text-align: center; }
+
+.item { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: var(--card); border: 0.5px solid var(--border); border-radius: var(--radius); margin-bottom: 8px; opacity: 0.65; transition: opacity 0.15s; }
+.item:hover { opacity: 1; }
+
+.cb { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--teal); background: rgba(100,223,223,0.15); color: var(--teal); padding: 0; flex-shrink: 0; cursor: pointer; font-size: 11px; display: flex; align-items: center; justify-content: center; }
+.cb:hover { background: rgba(100,223,223,0.25); }
+
+.taskBody { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.taskText { font-size: 15px; font-weight: 500; text-decoration: line-through; color: var(--text2); }
+.taskMeta { font-size: 12px; color: var(--text3); }
+
+.delBtn { border: none; background: none; color: var(--text3); font-size: 15px; padding: 3px 6px; cursor: pointer; border-radius: 6px; }
+.delBtn:hover { color: var(--red); background: rgba(255,107,107,0.1); }
+
+.empty { text-align: center; padding: 3rem; color: var(--text3); font-size: 14px; }
