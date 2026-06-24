@@ -16,22 +16,7 @@ function calcPriority(deadline, hours, type) {
   const level = score >= 40 ? 'high' : score >= 15 ? 'med' : 'low'
   return { score, level }
 }
-const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-const [habitName, setHabitName] = useState('')
-const [habitDays, setHabitDays] = useState([0,1,2,3,4,5,6])
-const [addingHabit, setAddingHabit] = useState(false)
 
-function toggleDay(d) {
-  setHabitDays(prev => prev.includes(d) ? prev.filter(x => x !== d) : [...prev, d])
-}
-
-async function addHabit() {
-  if (!habitName.trim() || !habitDays.length) return
-  setAddingHabit(true)
-  await supabase.from('habits').insert({ id: uid(), name: habitName.trim(), days: habitDays, streak: 0, last_completed: null })
-  setHabitName(''); setHabitDays([0,1,2,3,4,5,6])
-  setAddingHabit(false)
-}
 export default function HomePage() {
   const [input, setInput] = useState('')
   const [desc, setDesc] = useState('')
@@ -44,7 +29,22 @@ export default function HomePage() {
   const [migrating, setMigrating] = useState(false)
   const [migrateMsg, setMigrateMsg] = useState('')
   const [hasMigrated, setHasMigrated] = useState(false)
+  const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  const [habitName, setHabitName] = useState('')
+  const [habitDays, setHabitDays] = useState([0,1,2,3,4,5,6])
+  const [addingHabit, setAddingHabit] = useState(false)
+  
+  function toggleDay(d) {
+  setHabitDays(prev => prev.includes(d) ? prev.filter(x => x !== d) : [...prev, d])
+}
 
+async function addHabit() {
+  if (!habitName.trim() || !habitDays.length) return
+  setAddingHabit(true)
+  await supabase.from('habits').insert({ id: uid(), name: habitName.trim(), days: habitDays, streak: 0, last_completed: null })
+  setHabitName(''); setHabitDays([0,1,2,3,4,5,6])
+  setAddingHabit(false)
+}
   useEffect(() => {
     const now = new Date()
     now.setMinutes(now.getMinutes() - now.getTimezoneOffset())
