@@ -1,23 +1,41 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #1a1a2e;
-  --bg2: #16213e;
-  --bg3: #0f3460;
-  --card: #1e1e3a;
-  --card2: #252547;
-  --text: #e8e8f0;
-  --text2: #9999bb;
-  --text3: #6666aa;
-  --border: rgba(150,150,255,0.1);
-  --border2: rgba(150,150,255,0.2);
-  --teal: #64dfdf;
-  --red: #ff6b6b;
-  --amber: #ffd93d;
-  --purple: #a78bfa;
-  --purple2: #7c3aed;
+  --bg: #1a0f1e;
+  --bg2: #2a1a2e;
+  --card: #241530;
+  --card2: #2e1a38;
+  --text: #f0e8f5;
+  --text2: #c4a8d4;
+  --text3: #8a6a9a;
+  --border: rgba(219,212,255,0.1);
+  --border2: rgba(219,212,255,0.2);
+  --accent: #DBD4FF;
+  --accent2: #92E4BA;
+  --pink: #E491A6;
+  --purple: #993A8B;
+  --red: #E35336;
+  --amber: #F4A460;
   --radius: 10px;
   --radius-lg: 16px;
+}
+
+[data-theme="light"] {
+  --bg: #FFFFE3;
+  --bg2: #F5F5DC;
+  --card: #DBD4FF;
+  --card2: #92E4BA;
+  --text: #2a1a2e;
+  --text2: #723480;
+  --text3: #845763;
+  --border: rgba(114,52,128,0.15);
+  --border2: rgba(114,52,128,0.3);
+  --accent: #723480;
+  --accent2: #A2574F;
+  --pink: #845763;
+  --purple: #723480;
+  --red: #A2574F;
+  --amber: #808034;
 }
 
 body {
@@ -26,18 +44,19 @@ body {
   color: var(--text);
   min-height: 100vh;
   line-height: 1.6;
+  transition: background 0.2s, color 0.2s;
 }
 
 nav {
   display: flex;
   gap: 4px;
   padding: 14px 20px;
-  background: rgba(26,26,46,0.8);
-  backdrop-filter: blur(12px);
+  background: var(--card);
   border-bottom: 0.5px solid var(--border);
   position: sticky;
   top: 0;
   z-index: 10;
+  align-items: center;
 }
 
 nav a {
@@ -49,8 +68,20 @@ nav a {
   transition: all 0.15s;
 }
 
-nav a:hover { background: var(--card); color: var(--text); }
-nav a.active { background: var(--card2); color: var(--purple); font-weight: 500; }
+nav a:hover { background: var(--card2); color: var(--text); }
+
+.theme-toggle {
+  margin-left: auto;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  border: 0.5px solid var(--border2);
+  background: none;
+  color: var(--text2);
+  cursor: pointer;
+}
+
+.theme-toggle:hover { background: var(--card2); color: var(--text); }
 
 main { max-width: 680px; margin: 0 auto; padding: 2rem 1rem; }
 
@@ -67,8 +98,8 @@ input, select, textarea {
 }
 
 input:focus, select:focus, textarea:focus {
-  border-color: var(--purple);
-  box-shadow: 0 0 0 3px rgba(167,139,250,0.1);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(219,212,255,0.1);
 }
 
 button {
@@ -83,5 +114,5 @@ button {
   transition: all 0.15s;
 }
 
-button:hover { background: var(--card2); border-color: var(--purple); }
+button:hover { background: var(--card2); }
 button:active { transform: scale(0.98); }
