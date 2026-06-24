@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import styles from './page.module.css'
 
 const OLD_STORE = 'adhd_todos_v4'
+const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6) }
 
@@ -29,22 +30,10 @@ export default function HomePage() {
   const [migrating, setMigrating] = useState(false)
   const [migrateMsg, setMigrateMsg] = useState('')
   const [hasMigrated, setHasMigrated] = useState(false)
-  const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
   const [habitName, setHabitName] = useState('')
   const [habitDays, setHabitDays] = useState([0,1,2,3,4,5,6])
   const [addingHabit, setAddingHabit] = useState(false)
-  
-  function toggleDay(d) {
-  setHabitDays(prev => prev.includes(d) ? prev.filter(x => x !== d) : [...prev, d])
-}
 
-async function addHabit() {
-  if (!habitName.trim() || !habitDays.length) return
-  setAddingHabit(true)
-  await supabase.from('habits').insert({ id: uid(), name: habitName.trim(), days: habitDays, streak: 0, last_completed: null })
-  setHabitName(''); setHabitDays([0,1,2,3,4,5,6])
-  setAddingHabit(false)
-}
   useEffect(() => {
     const now = new Date()
     now.setMinutes(now.getMinutes() - now.getTimezoneOffset())
@@ -122,6 +111,18 @@ async function addHabit() {
     setMigrating(false)
   }
 
+  function toggleDay(d) {
+    setHabitDays(prev => prev.includes(d) ? prev.filter(x => x !== d) : [...prev, d])
+  }
+
+  async function addHabit() {
+    if (!habitName.trim() || !habitDays.length) return
+    setAddingHabit(true)
+    await supabase.from('habits').insert({ id: uid(), name: habitName.trim(), days: habitDays, streak: 0, last_completed: null })
+    setHabitName(''); setHabitDays([0,1,2,3,4,5,6])
+    setAddingHabit(false)
+  }
+
   return (
     <div>
       <h1 className={styles.title}>brain dump 🧠</h1>
@@ -179,20 +180,21 @@ async function addHabit() {
           {migrateMsg && <span className={styles.migrateMsg}>{migrateMsg}</span>}
         </div>
       )}
+
       <div style={{ marginTop: '2rem' }}>
-  <h2 className={styles.sectionTitle}>new habit 🔥</h2>
-  <div className={styles.form}>
-    <input value={habitName} onChange={e => setHabitName(e.target.value)} onKeyDown={e => e.key === 'Enter' && addHabit()} placeholder="new habit..." className={styles.mainInput} />
-    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-      {DAYS.map((d, i) => (
-        <button key={i} onClick={() => toggleDay(i)} className={habitDays.includes(i) ? styles.dayOn : styles.aiBtn}>{d}</button>
-      ))}
-    </div>
-    <button onClick={addHabit} disabled={addingHabit || !habitName.trim()} className={styles.addBtn}>
-      {addingHabit ? '...' : '+ add habit'}
-    </button>
-  </div>
-</div>
+        <h2 className={styles.sectionTitle}>new habit 🔥</h2>
+        <div className={styles.form}>
+          <input value={habitName} onChange={e => setHabitName(e.target.value)} onKeyDown={e => e.key === 'Enter' && addHabit()} placeholder="new habit..." className={styles.mainInput} />
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+            {DAYS.map((d, i) => (
+              <button key={i} onClick={() => toggleDay(i)} className={habitDays.includes(i) ? styles.dayOn : styles.aiBtn}>{d}</button>
+            ))}
+          </div>
+          <button onClick={addHabit} disabled={addingHabit || !habitName.trim()} className={styles.addBtn}>
+            {addingHabit ? '...' : '+ add habit'}
+          </button>
+        </div>
+      </div>
     </div>
   )
 }
