@@ -1,0 +1,31 @@
+.title { font-size: 26px; font-weight: 600; margin-bottom: 6px; }
+.sub { font-size: 14px; color: var(--text2); margin-bottom: 2rem; }
+.loading { color: var(--text2); padding: 2rem; text-align: center; }
+.sectionHd { font-size: 11px; font-weight: 500; color: var(--text3); letter-spacing: .06em; text-transform: uppercase; margin: 1.5rem 0 8px; }
+
+.form { background: var(--card); border: 0.5px solid var(--border2); border-radius: var(--radius-lg); padding: 1.5rem; display: flex; flex-direction: column; gap: 12px; }
+.mainInput { width: 100%; font-size: 15px; }
+.dayPicker { display: flex; gap: 6px; flex-wrap: wrap; }
+.dayOn { padding: 5px 10px; border-radius: 20px; font-size: 12px; background: var(--purple); color: #fff; border-color: var(--purple); }
+.dayOff { padding: 5px 10px; border-radius: 20px; font-size: 12px; color: var(--text3); }
+.addBtn { align-self: flex-start; background: var(--purple); color: #fff; border-color: var(--purple); font-weight: 500; }
+
+.item { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: var(--card); border: 0.5px solid var(--border); border-radius: var(--radius); margin-bottom: 8px; transition: all 0.15s; }
+.item:hover { border-color: var(--border2); }
+.itemDone { border-color: var(--accent2) !important; opacity: 0.75; }
+.itemOff { opacity: 0.4; }
+
+.cb { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border2); background: none; padding: 0; flex-shrink: 0; cursor: pointer; font-size: 11px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+.cbChecked { background: var(--accent2); border-color: var(--accent2); color: #1a1a2e; }
+
+.habitBody { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.habitName { font-size: 15px; font-weight: 500; }
+.habitMeta { font-size: 11px; color: var(--text3); }
+
+.streak { font-size: 13px; font-weight: 600; color: var(--amber); flex-shrink: 0; }
+.resetBtn { border: none; background: none; color: var(--text3); font-size: 16px; padding: 3px 6px; cursor: pointer; border-radius: 6px; }
+.resetBtn:hover { color: var(--amber); background: rgba(244,164,96,0.1); }
+.delBtn { border: none; background: none; color: var(--text3); font-size: 15px; padding: 3px 6px; cursor: pointer; border-radius: 6px; }
+.delBtn:hover { color: var(--red); background: rgba(227,83,54,0.1); }
+
+.empty { text-align: center; padding: 3rem; color: var(--text3); font-size: 14px; }

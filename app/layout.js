@@ -29,6 +29,7 @@ export default function RootLayout({ children }) {
           <a href="/">brain dump</a>
           <a href="/tasks">active tasks</a>
           <a href="/completed">completed</a>
+          <a href="/habits">habits</a>
           <button className="theme-toggle" onClick={toggle}>
             {theme === 'dark' ? '☀️' : '🌙'}
           </button>
