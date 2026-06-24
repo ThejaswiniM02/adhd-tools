@@ -12,7 +12,8 @@
 .aiBtn { padding: 10px 12px; font-size: 12px; color: var(--purple); border-color: var(--purple); }
 .aiBtn:disabled { opacity: 0.4; cursor: not-allowed; }
 .aiHint { font-size: 11px; color: var(--text3); margin-top: 2px; }
-
+.sectionTitle { font-size: 18px; font-weight: 600; margin-bottom: 1rem; }
+.dayOn { padding: 5px 10px; border-radius: 20px; font-size: 12px; background: var(--purple); color: #fff; border-color: var(--purple); }
 .migrateBox { margin-top: 2rem; padding: 1rem 1.25rem; background: var(--card); border: 0.5px dashed var(--border2); border-radius: var(--radius-lg); display: flex; flex-direction: column; gap: 10px; }
 .migrateBox p { font-size: 13px; color: var(--text2); }
 .migrateBtn { align-self: flex-start; font-size: 13px; color: var(--teal); border-color: var(--teal); }

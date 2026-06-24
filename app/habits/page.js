@@ -65,15 +65,7 @@ export default function HabitsPage() {
       <h1 className={styles.title}>habits 🔥</h1>
       <p className={styles.sub}>build the streak</p>
 
-      <div className={styles.form}>
-        <input value={name} onChange={e => setName(e.target.value)} onKeyDown={e => e.key === 'Enter' && add()} placeholder="new habit..." className={styles.mainInput} />
-        <div className={styles.dayPicker}>
-          {DAYS.map((d, i) => (
-            <button key={i} onClick={() => toggleDay(i)} className={selectedDays.includes(i) ? styles.dayOn : styles.dayOff}>{d}</button>
-          ))}
-        </div>
-        <button onClick={add} disabled={adding || !name.trim()} className={styles.addBtn}>{adding ? '...' : '+ add habit'}</button>
-      </div>
+      
 
       {todayHabits.length > 0 && (
         <>
